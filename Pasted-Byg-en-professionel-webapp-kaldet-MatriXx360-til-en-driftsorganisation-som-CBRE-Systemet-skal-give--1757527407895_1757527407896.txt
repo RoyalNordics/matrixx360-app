@@ -1,0 +1,136 @@
+Byg en professionel webapp kaldet MatriXx360 til en driftsorganisation som CBRE. Systemet skal give fuld styring og overblik over kunder, lokationer, servicekategorier, individuelle servicemoduler, leverandører, ansvarlige medarbejdere og compliance.
+
+⸻
+
+🧩 1. Brugergrænseflade (UI)
+	•	Brug venstresidet navigation med følgende hovedpunkter:
+	•	Dashboard
+	•	Customers
+	•	Locations
+	•	Service Templates
+	•	Service Modules
+	•	Suppliers
+	•	Settings
+	•	Webappen skal være mobilvenlig, men primært til desktop-brug.
+	•	UI skal være simpelt og komponentbaseret (brug fx React + Tailwind eller Next.js + Chakra UI).
+
+⸻
+
+🏢 2. Customers & Locations
+	•	En Customer har:
+	•	name, cvr_number, contact_person, email, phone, logo, notes
+	•	En Customer kan have én eller flere Locations:
+	•	address, zip_code, city, gps_coordinates, location_contact
+	•	Locations skal kunne oprettes direkte fra Customer-visningen.
+	•	Lokationer bruges som “container” for Service Modules.
+
+⸻
+
+⚙️ 3. Service Templates (dynamiske skabeloner)
+	•	Brugeren skal kunne oprette egne skabeloner via en “Service Templates” sektion i Settings.
+	•	En skabelon har:
+	•	template_name (f.eks. “Elevator”)
+	•	category (f.eks. “Vertical Transport”)
+	•	fields[] – et array af definerede felter:
+	•	label, type (text, number, dropdown, date, checkbox, file), required, default_value, conditional_display
+	•	Felter kan grupperes i sektioner som:
+	•	“Technical Specs”, “Service Agreement”, “Position”, “Documents”, “Responsible”
+	•	Felter skal kunne konfigureres til at være betinget, f.eks. “vis kun felt B hvis felt A = Ja”
+
+⸻
+
+🧱 4. Service Modules (genereres ud fra skabeloner)
+	•	Brugeren skal kunne oprette Service Modules direkte fra en lokation.
+	•	Når et modul oprettes:
+	•	Brugeren vælger en Service Template
+	•	Systemet renderer dynamisk en formular baseret på template-felterne
+	•	Modulet tilknyttes automatisk:
+	•	En location_id
+	•	En customer_id (arvet fra lokationen)
+	•	En category (arvet fra template)
+	•	Brugeren vælger:
+	•	En ansvarlig CBRE-medarbejder (fra dropdown)
+	•	En leverandør (se filtrering nedenfor)
+	•	Udfylder skabelonens felter
+	•	Uploader dokumenter
+	•	Angiver næste service-dato
+
+⸻
+
+🔄 5. Forbindelser og logik (vigtigt for Replit)
+	•	Service Module ←→ Service Template
+	•	Et modul er en instans af én skabelon
+	•	Service Template ←→ Category
+	•	Hver skabelon har én kategori
+	•	Supplier ←→ Categories[]
+	•	Leverandører kan knyttes til flere kategorier
+	•	Service Module ←→ Supplier
+	•	Når et modul oprettes, skal kun leverandører vises, som har den samme kategori som skabelonen
+
+Regel:
+Ved oprettelse af et servicemodul, skal dropdown for “leverandør” kun vise leverandører, hvor selectedTemplate.category ∈ supplier.categories[].
+
+⸻
+
+🔧 6. Suppliers (Leverandører)
+	•	Brugeren kan oprette leverandører med:
+	•	name, cvr_number, address, contact_persons[], categories[], documents[]
+	•	Hver kontaktperson har: name, phone, email, role
+	•	Kategorier tilknyttes fra en central liste
+	•	Leverandører rates med:
+	•	quality_rating (1-5)
+	•	price_rating (1-5)
+	•	Ved oprettelse/visning af Service Modules, filtrér leverandørliste ud fra kategori-match.
+
+⸻
+
+📊 7. Dashboard
+	•	Startdashboard skal vise:
+	•	Antal servicemoduler med:
+	•	overskredne deadlines
+	•	næste service inden for 10 dage
+	•	mangler leverandør
+	•	Filtrérbart på: kunde, lokation, kategori, ansvarlig
+	•	Klik på en indikator for at hoppe til detaljeret oversigt
+	•	Visualisering:
+	•	Brug bar- eller tabeloversigt med farvekoder (rød = overskredet, gul = nærmer sig, grøn = ok)
+
+⸻
+
+🧾 8. Salgsmodul (valgfrit)
+	•	Brugeren skal kunne:
+	•	Oprette et tilbud ud fra valgte kunde + lokation + servicekategorier
+	•	PDF-generere et overskueligt dokument
+	•	Kundeoplysninger
+	•	Valgte servicekategorier
+	•	Anslået pris / beskrivelse (dummy-tekst ok til demo)
+
+⸻
+
+📱 9. Mobilversion
+	•	Light-version af appen til iPhone/Android (PWA)
+	•	Teknikere/site managers skal kunne:
+	•	Se egne moduler
+	•	Uploade billeder
+	•	Bekræfte udført service
+	•	Få notifikationer om nye opgaver
+
+⸻
+
+🧰 10. Teknologi og struktur
+	•	Frontend: React (eller Next.js) med Tailwind eller Chakra UI
+	•	Backend: Node.js (Express)
+	•	Database: PostgreSQL (Supabase anbefalet)
+	•	Auth: Supabase Auth
+	•	Filhåndtering: Supabase Storage eller Cloudinary
+	•	PDF: Brug fx jspdf eller server-side puppeteer
+	•	Brug .env til API-nøgler og endpoints
+
+⸻
+
+📦 Fremtidige funktioner (ikke nødvendige nu)
+	•	Geo-mapping af serviceplacering
+	•	Automatisk email-påmindelser
+	•	Brugerroller (Admin, Tekniker, Salg, Kunde)
+	•	Notifikationer ved ændringer
+	•	Tidslinje for servicehistorik pr. modul
